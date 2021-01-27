@@ -1,0 +1,139 @@
+{% extends '../base.html' %}
+
+{% block title %}
+Update
+{% endblock %}
+
+{% block content %}
+<div class="container mt-2">
+    <h1>Update Employee Details</h1>
+        {% if error %} 
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Opps!!!</strong> {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        <form class="row g-3 col-md-6" action="" method="POST">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label for="inputFirstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="inputFirstName" value="{{ emp_detail.first_name }}" name="first_name" placeholder="First Name" required>
+            </div>
+            <div class="col-md-6">
+                <label for="inputLastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="inputLastName" value="{{ emp_detail.last_name }}" name="last_name" placeholder="Last Name" required>
+            </div>
+            <div class="col-md-12">
+                <label for="inputEmail4" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail4" value="{{ emp_detail.email }}" name="email" placeholder="Email" readonly>
+            </div>
+            <!-- <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPassword4" name="password" placeholder="Password" required>
+            </div> -->
+            <div class="col-6">
+                <label for="inputAddress1" class="form-label">Address 1</label>
+                <input type="text" class="form-control" id="inputAddress1" value="{{ emp_profile.address1 }}" name="address_1" placeholder="1234 Main St" required>
+            </div>
+            <div class="col-6">
+                <label for="inputAddress2" class="form-label">Address 2</label>
+                <input type="text" class="form-control" id="inputAddress2" value="{{ emp_profile.address2 }}" name="address_2" placeholder="Apartment, studio, or floor" required>
+            </div>
+            <div class="col-md-4">
+                <label for="inputCity" class="form-label">City</label>
+                <input type="text" class="form-control" id="inputCity" value="{{ emp_profile.city }}" name="city" placeholder="City" required>
+            </div>
+            <div class="col-md-4">
+                <label for="inputState" class="form-label">State</label>
+                <select id="inputState" name="state" class="form-select" required>
+                    <option value="">Choose...</option>
+                    <option value="GJ">Gujarat</option>
+                    <option value="RJ">Rajshthan</option>
+                    <option value="CA">California</option>
+                    <option value="NY">New York</option>
+                    <option value="GB-ENG">England</option>
+
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="inputCountry" class="form-label">Country</label>
+                <select id="inputCountry" name="country" class="form-select" required>
+                    <option selected value="">Choose...</option>
+                    <option value="IN">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UK">UK</option>
+
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="inputPhoneNumber" class="form-label">Phone Number</label>
+                <input type="number" class="form-control" id="inputPhoneNumber" value="{{ emp_profile.phone_number }}" name="phone_number" placeholder="Phone Number" required>
+            </div>
+            <div class="col-md-6">
+                <label for="inputPincode" class="form-label">Pincode</label>
+                <input type="number" class="form-control" id="inputPincode" value="{{ emp_profile.pincode }}" name="pincode" placeholder="Pincode" required>
+            </div>
+            <div class="col-md-6">
+                <label for="inputDesignation" class="form-label">Designation</label>
+                <select id="inputDesignation" name="designation" class="form-select" required>
+                    <option selected value="">Choose...</option>
+                    {% if request.user.employeeprofile.designation == '3' %}
+                    <option value="1">Project Manager</option>
+                    {% endif %}
+                    <option value="2">Employee</option>
+                    
+                    
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="inputDepartment" class="form-label">Department</label>
+                <input type="text" class="form-control" id="inputDepartment" value="{{ emp_profile.department }}" name="department" placeholder="Department" required>
+            </div>
+
+            <div class="col-md-6" id="inputRM">
+                <label for="inputReportingManager" class="form-label">Reporting Manager</label>
+                <select id="inputReportingManager" name="reporting_manager" class="form-select">
+                    <option selected value="">Choose...</option>
+                    {% for report_manager in reporting_managers %}
+                        {% if report_manager.user == emp_profile.reporting_manager %}
+                            <option selected value="{{report_manager.user.id}}">{{report_manager.user.get_full_name}}</option>
+                        {% else %}
+                            <option value="{{report_manager.user.id}}">{{report_manager.user.get_full_name}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                
+            </div>
+            
+        </form>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block js %}
+<script>
+    if("{{ emp_profile.designation }}" == "1"){
+        $("#inputRM").hide();
+
+    }
+    $("#inputDesignation").on('change',function(){
+        var designation = $(this).val();
+        if( designation == 2 ){
+            $("#inputRM").show();
+        } else {
+            $("#inputRM").hide();
+        }
+    });
+
+    $("#inputState").find("option[value={{emp_profile.state}}]").attr("selected", true);
+    $("#inputCountry").find("option[value={{emp_profile.country}}]").attr("selected",true);
+    $("#inputDesignation").find("option[value={{emp_profile.designation}}]").attr("selected",true);
+</script>
+{% endblock %}
